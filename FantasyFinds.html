@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Finds - Discover Musical Treasures</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease-in-out infinite alternate;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 30px;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .player-section {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideInLeft 1s ease-out;
+        }
+
+        .cd-library {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            animation: slideInRight 1s ease-out;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .cd-library::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .cd-library::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+
+        .cd-library::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+        }
+
+        .cd-album {
+            margin-bottom: 25px;
+            border-radius: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .cd-album:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .cd-title {
+            font-size: 1.3rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #4ecdc4;
+        }
+
+        .cd-duration {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            margin-bottom: 15px;
+        }
+
+        .track {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            margin: 8px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .track:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .track.active {
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .track-name {
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .track-duration {
+            opacity: 0.7;
+            font-size: 0.9rem;
+        }
+
+        .now-playing {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .current-track {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .current-album {
+            font-size: 1.1rem;
+            opacity: 0.8;
+            margin-bottom: 20px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .control-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            font-size: 2rem;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        }
+
+        .progress-container {
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: linear-gradient(90deg, #ff6b6b, #4ecdc4);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+
+        .time-display {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        .volume-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .volume-slider {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .volume-slider::-webkit-slider-thumb {
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .file-upload {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 25px;
+            text-align: center;
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .file-upload:hover {
+            border-color: #4ecdc4;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .upload-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .visualizer {
+            display: flex;
+            justify-content: center;
+            align-items: end;
+            height: 80px;
+            gap: 3px;
+            margin: 20px 0;
+        }
+
+        .bar {
+            width: 4px;
+            background: linear-gradient(to top, #ff6b6b, #4ecdc4);
+            border-radius: 2px;
+            animation: pulse 0.8s ease-in-out infinite alternate;
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: center;
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0% { height: 10px; }
+            100% { height: 50px; }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .controls {
+                gap: 15px;
+            }
+            
+            .control-btn {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .play-btn {
+                width: 70px;
+                height: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Fantasy Finds</h1>
+            <p class="tagline">Discover Musical Treasures</p>
+        </header>
+
+        <div class="main-content">
+            <div class="player-section">
+                <div class="now-playing">
+                    <div class="current-track" id="currentTrack">Select a track to play</div>
+                    <div class="current-album" id="currentAlbum">Choose from your collection</div>
+                </div>
+
+                <div class="visualizer" id="visualizer">
+                    <!-- Visualizer bars will be generated by JavaScript -->
+                </div>
+
+                <div class="controls">
+                    <button class="control-btn" id="prevBtn">⏮</button>
+                    <button class="control-btn play-btn" id="playBtn">▶</button>
+                    <button class="control-btn" id="nextBtn">⏭</button>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" id="progressBar">
+                        <div class="progress" id="progress"></div>
+                    </div>
+                    <div class="time-display">
+                        <span id="currentTime">0:00</span>
+                        <span id="duration">0:00</span>
+                    </div>
+                </div>
+
+                <div class="volume-container">
+                    <span>🔊</span>
+                    <input type="range" class="volume-slider" id="volumeSlider" min="0" max="100" value="70">
+                    <span id="volumeDisplay">70%</span>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;"></div>
+            </div>
+
+            <div class="cd-library" id="cdLibrary">
+                <h3 style="margin-bottom: 20px; color: #4ecdc4;">Your Music Collection</h3>
+                <!-- CD albums will be populated here -->
+            </div>
+        </div>
+
+        <div class="file-upload">
+            <h3>Add New Music</h3>
+            <p>Upload MP3 files to expand your fantasy collection</p>
+            <input type="file" id="fileInput" accept=".mp3" multiple style="display: none;">
+            <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Choose Files</button>
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="metadata"></audio>
+
+    <script>
+        class FantasyFindsRadio {
+            constructor() {
+                this.audioPlayer = document.getElementById('audioPlayer');
+                this.isPlaying = false;
+                this.currentTrackIndex = 0;
+                this.currentAlbumIndex = 0;
+                this.albums = [];
+                this.initializeDefaultMusic();
+                this.initializeEventListeners();
+                this.createVisualizer();
+                this.updateDisplay();
+            }
+
+            initializeDefaultMusic() {
+                // Default music with dummy MP3 files - replace these URLs with your actual MP3 files
+                this.albums = [
+                    {
+                        title: "The Lovely Melodies",
+                        duration: "15:30",
+                        tracks: [
+                            { name: "Find You", duration: "3:31", url: "Find You.mp3" },
+                            { name: "Timeless", duration: "3:46", url: "Timeless.mp3" },
+                            { name: "Skybound", duration: "3:39", url: "Skybound.mp3" },
+                            { name: "Loving Else", duration: "2:43", url: "Loving Else.mp3" },
+                            { name: "You Make Me Feel Like Flying", duration: "2:59", url: "You Make Me Feel Like Flying.mp3" }
+                        ]
+                    },
+                    {
+                        title: "Get Up and Dance with Me",
+                        duration: "14:36",
+                        tracks: [
+                            { name: "Harbor Lights", duration: "2:39", url: "Harbor Lights.mp3" },
+                            { name: "Battle of the Realms", duration: "3:10", url: "Spark.mp3" },
+                            { name: "Party like there is No Tomorrow", duration: "2:50", url: "Party Like there is No Tomorrow.mp3" },
+                            { name: "Vine", duration: "2:59", url: "Vibe.mp3" },
+                            { name: "Unfurl", duration: "3:38", url: "Unfurl.mp3" }
+                        ]
+                    },
+                    {
+                        title: "Feeling Strong Yet",
+                        duration: "13:34",
+                        tracks: [
+                            { name: "Crown Doesn't Slip", duration: "2:57", url: "Crown Doesnt Slip.mp3" },
+                            { name: "Victory", duration: "3:11", url: "Victory.mp3" },
+                            { name: "Legends", duration: "2:44", url: "Legends.mp3" },
+                            { name: "You Picked the Wrong One", duration: "2:53", url: "You Picked the Wrong One.mp3" },
+                            { name: "Revolt", duration: "2:29", url: "Revolt.mp3" }
+                        ]
+                    }
+                ];
+                this.renderLibrary();
+            }
+
+            initializeEventListeners() {
+                // Play/Pause button
+                document.getElementById('playBtn').addEventListener('click', () => {
+                    this.togglePlay();
+                });
+
+                // Previous/Next buttons
+                document.getElementById('prevBtn').addEventListener('click', () => {
+                    this.previousTrack();
+                });
+
+                document.getElementById('nextBtn').addEventListener('click', () => {
+                    this.nextTrack();
+                });
+
+                // Progress bar
+                document.getElementById('progressBar').addEventListener('click', (e) => {
+                    this.seek(e);
+                });
+
+                // Volume control
+                document.getElementById('volumeSlider').addEventListener('input', (e) => {
+                    this.setVolume(e.target.value);
+                });
+
+                // Audio events
+                this.audioPlayer.addEventListener('timeupdate', () => {
+                    this.updateProgress();
+                });
+
+                this.audioPlayer.addEventListener('loadedmetadata', () => {
+                    this.updateDuration();
+                });
+
+                this.audioPlayer.addEventListener('ended', () => {
+                    this.nextTrack();
+                });
+
+                this.audioPlayer.addEventListener('error', (e) => {
+                    this.handleAudioError(e);
+                });
+
+                this.audioPlayer.addEventListener('canplay', () => {
+                    this.hideError();
+                });
+
+                // File upload
+                document.getElementById('fileInput').addEventListener('change', (e) => {
+                    this.handleFileUpload(e);
+                });
+            }
+
+            createVisualizer() {
+                const visualizer = document.getElementById('visualizer');
+                visualizer.innerHTML = '';
+                
+                for (let i = 0; i < 20; i++) {
+                    const bar = document.createElement('div');
+                    bar.className = 'bar';
+                    bar.style.height = '10px';
+                    bar.style.animationDelay = `${i * 0.1}s`;
+                    visualizer.appendChild(bar);
+                }
+            }
+
+            renderLibrary() {
+                const library = document.getElementById('cdLibrary');
+                const albumsHtml = this.albums.map((album, albumIndex) => {
+                    const tracksHtml = album.tracks.map((track, trackIndex) => `
+                        <div class="track" onclick="fantasyRadio.selectTrack(${albumIndex}, ${trackIndex})">
+                            <span class="track-name">${track.name}</span>
+                            <span class="track-duration">${track.duration}</span>
+                        </div>
+                    `).join('');
+
+                    return `
+                        <div class="cd-album">
+                            <div class="cd-title">${album.title}</div>
+                            <div class="cd-duration">Total: ${album.duration}</div>
+                            ${tracksHtml}
+                        </div>
+                    `;
+                }).join('');
+
+                library.innerHTML = `
+                    <h3 style="margin-bottom: 20px; color: #4ecdc4;">Your Music Collection</h3>
+                    ${albumsHtml}
+                `;
+            }
+
+            selectTrack(albumIndex, trackIndex) {
+                this.currentAlbumIndex = albumIndex;
+                this.currentTrackIndex = trackIndex;
+                
+                // Remove active class from all tracks
+                document.querySelectorAll('.track').forEach(track => {
+                    track.classList.remove('active');
+                });
+
+                // Add active class to selected track
+                const allTracks = document.querySelectorAll('.track');
+                let globalTrackIndex = 0;
+                for (let i = 0; i < albumIndex; i++) {
+                    globalTrackIndex += this.albums[i].tracks.length;
+                }
+                globalTrackIndex += trackIndex;
+                if (allTracks[globalTrackIndex]) {
+                    allTracks[globalTrackIndex].classList.add('active');
+                }
+
+                this.loadTrack();
+            }
+
+            loadTrack() {
+                const currentTrack = this.albums[this.currentAlbumIndex].tracks[this.currentTrackIndex];
+                const currentAlbum = this.albums[this.currentAlbumIndex];
+
+                document.getElementById('currentTrack').textContent = currentTrack.name;
+                document.getElementById('currentAlbum').textContent = currentAlbum.title;
+
+                // Load the actual audio file
+                this.audioPlayer.src = currentTrack.url;
+                this.audioPlayer.load();
+            }
+
+            togglePlay() {
+                if (!this.albums[this.currentAlbumIndex]?.tracks[this.currentTrackIndex]) {
+                    this.showError('Please select a track first or upload some music files!');
+                    return;
+                }
+
+                if (this.isPlaying) {
+                    this.pause();
+                } else {
+                    this.play();
+                }
+            }
+
+            async play() {
+                if (!this.audioPlayer.src) {
+                    this.showError('No audio file loaded. Please select a track.');
+                    return;
+                }
+
+                try {
+                    await this.audioPlayer.play();
+                    this.isPlaying = true;
+                    document.getElementById('playBtn').textContent = '⏸';
+                    this.animateVisualizer();
+                    this.hideError();
+                } catch (error) {
+                    this.showError('Unable to play this track. The file may be missing or corrupted.');
+                    console.error('Playback error:', error);
+                }
+            }
+
+            pause() {
+                this.audioPlayer.pause();
+                this.isPlaying = false;
+                document.getElementById('playBtn').textContent = '▶';
+                this.stopVisualizerAnimation();
+            }
+
+            previousTrack() {
+                if (this.currentTrackIndex > 0) {
+                    this.currentTrackIndex--;
+                } else if (this.currentAlbumIndex > 0) {
+                    this.currentAlbumIndex--;
+                    this.currentTrackIndex = this.albums[this.currentAlbumIndex].tracks.length - 1;
+                } else {
+                    this.currentAlbumIndex = this.albums.length - 1;
+                    this.currentTrackIndex = this.albums[this.currentAlbumIndex].tracks.length - 1;
+                }
+                
+                this.updateActiveTrack();
+                this.loadTrack();
+                if (this.isPlaying) {
+                    setTimeout(() => this.play(), 100);
+                }
+            }
+
+            nextTrack() {
+                if (this.currentTrackIndex < this.albums[this.currentAlbumIndex].tracks.length - 1) {
+                    this.currentTrackIndex++;
+                } else if (this.currentAlbumIndex < this.albums.length - 1) {
+                    this.currentAlbumIndex++;
+                    this.currentTrackIndex = 0;
+                } else {
+                    this.currentAlbumIndex = 0;
+                    this.currentTrackIndex = 0;
+                }
+                
+                this.updateActiveTrack();
+                this.loadTrack();
+                if (this.isPlaying) {
+                    setTimeout(() => this.play(), 100);
+                }
+            }
+
+            updateActiveTrack() {
+                document.querySelectorAll('.track').forEach(track => {
+                    track.classList.remove('active');
+                });
+
+                const allTracks = document.querySelectorAll('.track');
+                let globalTrackIndex = 0;
+                for (let i = 0; i < this.currentAlbumIndex; i++) {
+                    globalTrackIndex += this.albums[i].tracks.length;
+                }
+                globalTrackIndex += this.currentTrackIndex;
+                if (allTracks[globalTrackIndex]) {
+                    allTracks[globalTrackIndex].classList.add('active');
+                }
+            }
+
+            animateVisualizer() {
+                if (!this.isPlaying) return;
+                
+                const bars = document.querySelectorAll('.bar');
+                bars.forEach(bar => {
+                    const height = Math.random() * 50 + 10;
+                    bar.style.height = height + 'px';
+                });
+
+                setTimeout(() => this.animateVisualizer(), 200);
+            }
+
+            stopVisualizerAnimation() {
+                const bars = document.querySelectorAll('.bar');
+                bars.forEach(bar => {
+                    bar.style.height = '10px';
+                });
+            }
+
+            setVolume(value) {
+                this.audioPlayer.volume = value / 100;
+                document.getElementById('volumeDisplay').textContent = value + '%';
+            }
+
+            seek(e) {
+                const progressBar = document.getElementById('progressBar');
+                const clickX = e.offsetX;
+                const width = progressBar.offsetWidth;
+                const duration = this.audioPlayer.duration;
+                
+                if (duration) {
+                    const newTime = (clickX / width) * duration;
+                    this.audioPlayer.currentTime = newTime;
+                }
+            }
+
+            updateProgress() {
+                const current = this.audioPlayer.currentTime;
+                const duration = this.audioPlayer.duration;
+                
+                if (duration) {
+                    const progress = (current / duration) * 100;
+                    document.getElementById('progress').style.width = progress + '%';
+                    document.getElementById('currentTime').textContent = this.formatTime(current);
+                }
+            }
+
+            updateDuration() {
+                const duration = this.audioPlayer.duration;
+                if (duration) {
+                    document.getElementById('duration').textContent = this.formatTime(duration);
+                }
+            }
+
+            formatTime(seconds) {
+                if (isNaN(seconds)) return '0:00';
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+            }
+
+            handleFileUpload(e) {
+                const files = Array.from(e.target.files);
+                if (files.length === 0) return;
+
+                // Create a new album for uploaded files
+                const newAlbum = {
+                    title: "Uploaded Collection",
+                    duration: "0:00",
+                    tracks: []
+                };
+
+                files.forEach(file => {
+                    if (file.type === 'audio/mpeg' || file.name.toLowerCase().endsWith('.mp3')) {
+                        const track = {
+                            name: file.name.replace('.mp3', ''),
+                            duration: "0:00", // Will be updated when loaded
+                            url: URL.createObjectURL(file)
+                        };
+                        newAlbum.tracks.push(track);
+                    }
+                });
+
+                if (newAlbum.tracks.length > 0) {
+                    this.albums.unshift(newAlbum);
+                    this.renderLibrary();
+                    this.showError(`Added ${newAlbum.tracks.length} tracks to your collection!`, false);
+                    setTimeout(() => this.hideError(), 3000);
+                }
+            }
+
+            handleAudioError(e) {
+                const error = this.audioPlayer.error;
+                let message = 'Unable to load or play this audio file.';
+                
+                if (error) {
+                    switch (error.code) {
+                        case error.MEDIA_ERR_ABORTED:
+                            message = 'Audio playback was aborted.';
+                            break;
+                        case error.MEDIA_ERR_NETWORK:
+                            message = 'Network error occurred while loading audio.';
+                            break;
+                        case error.MEDIA_ERR_DECODE:
+                            message = 'Audio file is corrupted or in unsupported format.';
+                            break;
+                        case error.MEDIA_ERR_SRC_NOT_SUPPORTED:
+                            message = 'Audio file format is not supported or file not found.';
+                            break;
+                    }
+                }
+                
+                this.showError(message);
+                this.pause();
+            }
+
+            showError(message, isError = true) {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+                
+                if (!isError) {
+                    errorElement.style.background = 'rgba(76, 205, 196, 0.2)';
+                    errorElement.style.color = '#4ecdc4';
+                    errorElement.style.borderColor = 'rgba(76, 205, 196, 0.3)';
+                } else {
+                    errorElement.style.background = 'rgba(255, 107, 107, 0.2)';
+                    errorElement.style.color = '#ff6b6b';
+                    errorElement.style.borderColor = 'rgba(255, 107, 107, 0.3)';
+                }
+            }
+
+            hideError() {
+                document.getElementById('errorMessage').style.display = 'none';
+            }
+
+            updateDisplay() {
+                this.setVolume(70);
+                document.getElementById('currentTime').textContent = '0:00';
+                document.getElementById('duration').textContent = '0:00';
+            }
+        }
+
+        // Initialize the radio when the page loads
+        let fantasyRadio;
+        window.addEventListener('load', () => {
+            fantasyRadio = new FantasyFindsRadio();
+        });
+    </script>
+</body>
+</html>
